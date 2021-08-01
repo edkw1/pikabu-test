@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import site.edkw.pikabu.R
 import site.edkw.pikabu.viewmodels.PostsListViewModel
@@ -19,15 +21,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        initPostsFragment()
-    }
-
-    private fun initPostsFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_host, postsListFragment)
-            .addToBackStack(null)
-            .commit()
     }
 
 }

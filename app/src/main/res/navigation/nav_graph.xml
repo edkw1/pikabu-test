@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/postsListFragment">
+
+    <fragment
+        android:id="@+id/postInfoFragment"
+        android:name="site.edkw.pikabu.screens.PostInfoFragment"
+        android:label="fragment_post_info"
+        tools:layout="@layout/fragment_post_info">
+        <argument
+            android:name="post"
+            app:argType="site.edkw.pikabu.models.Post" />
+        <action
+            android:id="@+id/action_postInfoFragment_to_errorFragment"
+            app:destination="@id/errorFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/postsListFragment"
+        android:name="site.edkw.pikabu.screens.PostsListFragment"
+        android:label="fragment_posts_list"
+        tools:layout="@layout/fragment_posts_list" >
+        <action
+            android:id="@+id/action_postsListFragment_to_postInfoFragment"
+            app:destination="@id/postInfoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim">
+            <argument
+                android:name="post"
+                app:argType="site.edkw.pikabu.models.Post" />
+        </action>
+        <action
+            android:id="@+id/action_postsListFragment_to_errorFragment"
+            app:destination="@id/errorFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/errorFragment"
+        android:name="site.edkw.pikabu.screens.ErrorFragment"
+        android:label="fragment_error"
+        tools:layout="@layout/fragment_error" />
+</navigation>
