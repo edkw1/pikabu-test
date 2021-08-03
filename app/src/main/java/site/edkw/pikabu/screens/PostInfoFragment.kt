@@ -17,12 +17,19 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import site.edkw.pikabu.R
+import site.edkw.pikabu.databinding.FragmentPostInfoBinding
 import site.edkw.pikabu.models.Post
 import site.edkw.pikabu.viewmodels.PostInfoViewModel
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PostInfoFragment @Inject constructor() : Fragment() {
+
+    private var _binding: FragmentPostInfoBinding? = null
+    val binding: FragmentPostInfoBinding
+        get() = _binding ?: throw RuntimeException("fragment binding is null!")
+
 
     private val postInfoViewModel: PostInfoViewModel by viewModels()
     private val args by navArgs<PostInfoFragmentArgs>()
@@ -30,8 +37,9 @@ class PostInfoFragment @Inject constructor() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_post_info, container, false)
+    ): View {
+        _binding = FragmentPostInfoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,42 +50,42 @@ class PostInfoFragment @Inject constructor() : Fragment() {
     }
 
     private fun setPostValuesToView(post: Post, view: View) {
-        val postInfoTitle = view.findViewById<TextView>(R.id.postInfoTitle)
-        val postInfoText = view.findViewById<TextView>(R.id.postInfoText)
-        val progressBar = view.findViewById<ProgressBar>(R.id.imageProgressBar)
 
         with(post) {
-            postInfoTitle.text = title
-            postInfoText.text = body
+            binding.postInfoTitle.text = title
+            binding.postInfoText.text = body
             if (!images.isNullOrEmpty()) {
                 postInfoViewModel.loadImages(images)
-            }else{
-                progressBar.visibility = ProgressBar.GONE
+            } else {
+                hideProgressBar()
             }
         }
     }
 
     private fun subscribeToLiveData(view: View) {
-        val imageContainer = view.findViewById<LinearLayout>(R.id.imageContainer)
-        val progressBar = view.rootView.findViewById<ProgressBar>(R.id.imageProgressBar)
 
         postInfoViewModel.images.observe(viewLifecycleOwner) { bitmapImages ->
-            imageContainer.removeAllViews()
+            binding.imageContainer.removeAllViews()
 
             if (bitmapImages.isNotEmpty()) {
                 bitmapImages.forEach { bitmapImage ->
                     val imageView = createImageView(bitmapImage)
-                    imageContainer.addView(imageView)
+                    binding.imageContainer.addView(imageView)
                 }
             }
         }
 
-        postInfoViewModel.loaded.observe(viewLifecycleOwner){loaded ->
+        postInfoViewModel.loaded.observe(viewLifecycleOwner) { loaded ->
             Log.d("loaded", "loaded")
-            if(loaded){
-                progressBar.visibility = ProgressBar.GONE
+            if (loaded) {
+               hideProgressBar()
             }
         }
+    }
+
+
+    private fun hideProgressBar(){
+        binding.imageProgressBar.visibility = ProgressBar.GONE
     }
 
 
@@ -86,7 +94,7 @@ class PostInfoFragment @Inject constructor() : Fragment() {
         imageView.setImageBitmap(bitmap)
         imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-        imageView.adjustViewBounds= true
+        imageView.adjustViewBounds = true
         return imageView
     }
 }
